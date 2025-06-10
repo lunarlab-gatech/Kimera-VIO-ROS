@@ -1,111 +1,73 @@
 # Kimera-VIO-ROS
 
-ROS Wrapper for [Kimera](https://github.com/MIT-SPARK/Kimera).
+ROS Wrapper for [Kimera](https://github.com/MIT-SPARK/Kimera), fork by the Lunar Lab for baseline experiments.
 
-<div align="center">
-    <img src="docs/media/Kimera-VIO-ROS_mesh.gif">
-</div>
+## Installation
 
-## Publications
+### Docker Setup
 
-We kindly ask to cite our paper if you find this library useful:
+Make sure to install:
+- [Docker](https://docs.docker.com/engine/install/ubuntu/)
 
-- A. Rosinol, M. Abate, Y. Chang, L. Carlone, [**Kimera: an Open-Source Library for Real-Time Metric-Semantic Localization and Mapping**](https://arxiv.org/abs/1910.02490). IEEE Intl. Conf. on Robotics and Automation (ICRA), 2020. [arXiv:1910.02490](https://arxiv.org/abs/1910.02490).
- 
- ```bibtex
- @InProceedings{Rosinol20icra-Kimera,
-   title = {Kimera: an Open-Source Library for Real-Time Metric-Semantic Localization and Mapping},
-   author = {Rosinol, Antoni and Abate, Marcus and Chang, Yun and Carlone, Luca},
-   year = {2020},
-   booktitle = {IEEE Intl. Conf. on Robotics and Automation (ICRA)},
-   url = {https://github.com/MIT-SPARK/Kimera},
-   pdf = {https://arxiv.org/pdf/1910.02490.pdf}
- }
+Then, setup this repository in a ROS1 workspace at a desired location on your computer.
+
+After that, navigate to the `docker` directory. Log in to the user that you want the docker file to create in the container. Then, edit the `DOCKERFILE` to update these lines:
+- `ARG USERNAME=`: Your username
+- `ARG USER_UID=`: Output of `echo $UID`
+- `ARG USER_GID=`: Output of `id -g`
+
+Edit the `enter_container.sh` script with the following paths:
+- `DATA_DIR=`: The directory where the any datasets are located
+- `ROS_WS_DIR=`: The directory of the ros workspace this repository is a part of
+
+Now, run the following commands:
+```
+build_container.sh
+run_container.sh
 ```
 
-# 1. Installation
+The rest of this README **assumes that you are inside the Docker container**. For easier debugging and use, its highly recommended to install the [VSCode Docker extension](https://code.visualstudio.com/docs/containers/overview), which allows you to start/stop the container and additionally attach VSCode to the container by right-clicking on the container and selecting `Attach Visual Studio Code`.
 
-## A. Prerequisities
+### KimeraVIO ROS Install
 
-- Install ROS by following [our reference](./docs/ros_installation.md), or the official [ROS website](https://www.ros.org/install/).
-
-- ROS non-default dependencies for [mesh_rviz_plugins](https://github.com/MIT-SPARK/mesh_rviz_plugins) (change `noetic` for your ROS distribution):
+Next navigate to the root of your ROS workspace, and run the following commands:
 ```bash
-sudo apt-get install ros-noetic-image-geometry ros-noetic-pcl-ros ros-noetic-cv-bridge
-```
-
-- System dependencies:
-First, update package list: `sudo apt-get update`
-```bash
-# For 20.04 (noetic)
-sudo apt-get install -y --no-install-recommends apt-utils
-sudo apt-get install -y \
-      cmake build-essential unzip pkg-config autoconf \
-      libboost-all-dev \
-      libjpeg-dev libpng-dev libtiff-dev \
-# Use libvtk5-dev, libgtk2.0-dev in ubuntu 16.04 \
-      libvtk7-dev libgtk-3-dev \
-      libatlas-base-dev gfortran \
-      libparmetis-dev \
-      python3-wstool python3-catkin-tools \
-```
-
-- GTSAM's Optional dependencies (highly recommended for speed)
-Install [Intel Threaded Building Blocks (TBB)](http://www.threadingbuildingblocks.org/): `sudo apt-get install libtbb-dev`
-
-## B. KimeraVIO ROS wrapper Installation
-
-```bash
-# Setup catkin workspace
-mkdir -p ~/catkin_ws/src
-cd ~/catkin_ws/
-catkin init
-catkin config --cmake-args -DCMAKE_BUILD_TYPE=Release -DGTSAM_TANGENT_PREINTEGRATION=OFF
-# On Ubuntu 16.04:
-# catkin config --cmake-args -DCMAKE_BUILD_TYPE=Release -DGTSAM_USE_SYSTEM_EIGEN=ON -DGTSAM_TANGENT_PREINTEGRATION=OFF
-
+source /opt/ros/noetic/setup.bash
+caktin init
+catkin config --cmake-args -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_FLAGS="-Wall -Wno-error" -DGTSAM_TANGENT_PREINTEGRATION=OFF
 catkin config --merge-devel
-
-# Add workspace to bashrc for automatic sourcing of workspace.
-echo 'source ~/catkin_ws/devel/setup.bash' >> ~/.bashrc
-
-# Clone repo
-cd ~/catkin_ws/src
-# For ssh:
-git clone git@github.com:MIT-SPARK/Kimera-VIO-ROS.git
-# For https:
-# git clone https://github.com/MIT-SPARK/Kimera-VIO-ROS.git
-
-# Install dependencies from rosinstall file using wstool
-wstool init # Use unless wstool is already initialized
-
-# For ssh:
-wstool merge Kimera-VIO-ROS/install/kimera_vio_ros_ssh.rosinstall
-# For https
-# wstool merge Kimera-VIO-ROS/install/kimera_vio_ros_https.rosinstall
-
-# download and update repos:
-wstool update
-
-# Optionally install all dependencies that you might have missed:
-# Some packages may report errors, this is expected
-# rosdep install --from-paths . --ignore-src -r -y
+echo 'source ~/<name_of_ros_ws>/devel/setup.bash' >> ~/.bashrc
 ```
-
-Finally, compile:
-
+Now, navigate into the `src` folder and then run this command: 
 ```bash
-# Compile code
-catkin build
-
-# Refresh workspace
-source ~/catkin_ws/devel/setup.bash
+wstool init
 ```
 
-# 2. Usage
+Depending on if you want to downlaod other dependencies via ssh or https, run one of the following commands:
+```bash
+wstool merge Kimera-VIO-ROS/install/kimera_vio_ros_ssh.rosinstall # ssh
+```
+```bash
+wstool merge Kimera-VIO-ROS/install/kimera_vio_ros_https.rosinstall # https
+```
+
+Now run the following:
+```bash
+wstool update
+rosdep update
+rosdep install --from-paths . --ignore-src -r -y
+```
+
+Finally, navigate back up to the root ROS workspace folder and compile the code:
+```bash
+catkin build
+source ~/<name_of_ros_ws>/devel/setup.bash
+```
+
+## Usage
 Download a [Euroc](https://projects.asl.ethz.ch/datasets/doku.php?id=kmavvisualinertialdatasets) rosbag: for example [V1_01_easy](http://robotics.ethz.ch/~asl-datasets/ijrr_euroc_mav_dataset/vicon_room1/V1_01_easy/V1_01_easy.bag).
 
-## Online
+### Online
   1. As a general good practice, open a new terminal and run: `roscore`
 
   2. In another terminal, launch KimeraVIO ROS wrapper:
@@ -130,21 +92,16 @@ Download a [Euroc](https://projects.asl.ethz.ch/datasets/doku.php?id=kmavvisuali
   > source ~/catkin_ws/devel/setup.bash # Change `bash` to the shell you use.
   > ```
 
-## Offline
+### Offline
   In this mode, the provided rosbag will be first parsed and then sent to the VIO for processing.
   This is particularly useful when debugging to avoid potential ROS networking issues.
-  - To run, launch the KimeraVIO ROS wrapper with the `online` parameter set to `false` and specify the rosbag's path:
+
+  First, edit `Kimera-VIO/params/Euroc/BackendParams.yaml` so that `autoInitialize` is set to `1`.
+
+  Next, edit the environment variables in the `tmux/euroc_example.yaml` file and then run the following command:
   ```bash
-  roslaunch kimera_vio_ros kimera_vio_ros_euroc.launch online:=false rosbag_path:="PATH/TO/ROSBAG"
+  tmuxp load tmux/euroc_example.yaml
   ```
-
-## Running Unit tests
-
-To run unit tests using catkin for this specific package, call (after building the package and sourcing the workspace):
-
-```bash
-catkin run_tests --no-deps --this
-```
 
 ## Other functionalities
 
@@ -180,9 +137,9 @@ This will publish a `/stereo_gray/points2` topic, which you can visualize in Rvi
 Alternatively, if you want to visualize the depth image, since Rviz does not provide a plugin to
 visualize a [disparity image](http://docs.ros.org/api/stereo_msgs/html/msg/DisparityImage.html), we also run a [disparity_image_proc](https://github.com/MIT-SPARK/disparity_image_proc) nodelet that will publish the depth image to `/stereo_gray/disparity_image_proc/depth/image_raw`.
 
-# Hardware use
+## Hardware use
 
 See the [documentation on hardware setup](docs/hardware_setup.md) for instructions on running KimeraROS on supported hardware platforms, as well as guides on how to develop for other platforms.
 
-# BSD License
+## BSD License
 KimeraVIO ROS wrapper is open source under the BSD license, see the [LICENSE.BSD](./LICENSE.BSD) file.

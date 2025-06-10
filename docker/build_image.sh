@@ -1,0 +1,1 @@
+docker build -t kimera_vio_ros .
