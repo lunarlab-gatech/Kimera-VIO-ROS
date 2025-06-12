@@ -2,7 +2,7 @@ session_name: kimera_vio
 
 environment:
   ROS_DIR: '/opt/ros/noetic'
-  DATA_DIR: '/home/dbutterfield3/data/EuRoC_datasets'
+  DATA_DIR: '/home/dbutterfield3/data/hercules_datasets/V1.2'
   ROS_WS: '/home/dbutterfield3/kimera_vio_ws'
 
 options:
@@ -19,7 +19,13 @@ windows:
   - roscore
   - shell_command:
     - sleep 8
-    - roslaunch kimera_vio_ros kimera_vio_ros_euroc.launch online:=false rosbag_path:=$DATA_DIR/V1_01_easy.bag log_output:=true gt_topic
+    - roslaunch kimera_vio_ros kimera_vio_ros_hercules_Husky1.launch \
+          rosbag_path:=$DATA_DIR/ausenv_test1_checkpoints_CSLAM_2UAVUGV_pruned.bag \
+          gt_topic:=/hercules_node/Husky1/ground_truth/odom_local \
+          base_link_frame_id:=Husky1/Kimera_VIO/odom_local \
+          left_cam_frame_id:=Husky1/front_center_optical \
+          robot_name:=Husky1 \
+
   - shell_command:
     - sleep 10
     - rviz -d $(rospack find kimera_vio_ros)/rviz/kimera_vio_euroc.rviz
