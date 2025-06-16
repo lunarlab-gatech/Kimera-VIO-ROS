@@ -97,7 +97,7 @@ addBetweenStereoFactors: 0
 betweenRotationPrecision: 0 # Inverse of variance. 
 betweenTranslationPrecision: 100 # 1/(0.1*0.1)
 
-# OPTIMIZATION PARAMETERS #####################################################
+# ================== OPTIMIZATION PARAMETERS ================== 
 # Documentation for these here: https://gtsam.org/doxygen/4.0.0/a03679.html
 relinearizeThreshold: 0.01
 relinearizeSkip: 1
