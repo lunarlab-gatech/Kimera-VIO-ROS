@@ -1,0 +1,127 @@
+%YAML:1.0
+
+# The backend modality for regular VIO, where:
+#   0: Structureless factors only, 4: SPR pipeline
+# As far as I am aware, 0 is less accurate but faster, while 4 is more accurate but slower.
+backend_modality: 0 
+
+# ============== INITIALIZATION PARAMETERS ============== 
+# 0 uses GT information to initialize, but we don't want this
+# since downsteam we will run a multi-robot alignment task
+autoInitialize: 1
+
+# Appears to round local & global gravity vectors while calculating
+# the initial rotation between them.
+roundOnAutoInitialize: 0
+
+# Initially I thought thse was backwards. Since Roll/Pitch are observable, 
+# and yaw/position is less/not observable, shouldn't covariance of the latter
+# be higher? But, as far as we understand, this allows new low covariance updates
+# to the roll and pitch to quickly update, while its alot harder down the line 
+# to change the yaw and position unless the incoming measurements have low covariance.
+# Note: These are standard deviations, not variances.
+initialPositionSigma: 1e-05
+initialRollPitchSigma: 0.174533 # 10.0/180.0*M_PI
+initialYawSigma: 0.00174533 # 0.1/180.0*M_PI
+
+# Initialize uncertainityes for velocity and IMU bias states, for prior factors
+initialVelocitySigma: 0.001
+initialAccBiasSigma: 0.1
+initialGyroBiasSigma: 0.01
+
+# Source used to generate the initial guess for the pose of the keyframe, where:
+#   IMU = 0, MONO = 1, STEREO = 2, PNP = 3, EXTERNAL_ODOM = 4
+pose_guess_source: 0
+
+# This appears to only be used if "pose_guess_source" is MONO.
+mono_translation_scale_factor: 0.1
+
+# ==================  VISION PARAMETERS ================== 
+## Smart Factors ##
+# How to linearize the factor, where:
+#   0: Hessian, 1: Implicit Schur, 2:Jacobian_Q, 3:Jacobian_SVD
+# Generally, from 0 to 3, goes from faster with lower accuracy/stability to slower
+# but more robust.
+linearizationMode: 0
+
+# How to manage degeneracy
+# 0: Ignore degeneracy, 1: Zero on degeneracy, 2: handle infinity
+# The default here of 1 seems to be the most stable.
+degeneracyMode: 1
+
+# rankTolerance: threshold to decide whether triangulation is result.degenerate
+# (the rank is the number of singular values of the triangulation matrix which
+# are larger than rankTolerance)
+rankTolerance: 1
+
+# If the landmark is triangulated at distance larger than this,
+# result is flagged as degenerate. This will likely need alot of tuning,
+# as currently running MonoIMU will result in noisier depths, while our sparse
+# environment might have a low number of landmarks.
+landmarkDistanceThreshold: 50 # Increased from previous 10
+
+# If this is nonnegative, will check if the average reprojection error
+# is smaller than this threshold after triangulation, otherwise result is
+# flagged as degenerate.
+outlierRejection: 3
+
+# Threshold to decide whether to re-triangulate
+retriangulationThreshold: 0.001
+
+## Noise models ##
+smartNoiseSigma: 3.0
+monoNoiseSigma: 1.8
+stereoNoiseSigma: 1.8
+regularityNoiseSigma: 0.03
+
+# The Tukey norm for outlier suppression, with more information here: 
+# https://members.loria.fr/MOBerger/Enseignement/Master2/Documents/ZhangIVC-97-01.pdf
+# "95% asymptotic efficiency on the standard normal distribution of the Tukey's 
+# biweight function is obtained with the tuning constant c=4.6851"
+monoNormType: 2
+monoNormParam: 4.6851 
+stereoNormType: 2
+stereoNormParam: 4.6851
+
+# The Huber norm, which is less sensitive to outliers while preserving quadratic loss
+# for small values.
+regularityNormType: 1
+regularityNormParam: 0.04
+
+## Between Stereo Factors ##
+# Should be zero, as we're running a mono pipeline
+addBetweenStereoFactors: 0
+
+# I believe these are unused due to 
+# "addBetweenStereoFactors" being false.
+betweenRotationPrecision: 0 # Inverse of variance. 
+betweenTranslationPrecision: 100 # 1/(0.1*0.1)
+
+# OPTIMIZATION PARAMETERS #####################################################
+# Documentation for these here: https://gtsam.org/doxygen/4.0.0/a03679.html
+relinearizeThreshold: 0.01
+relinearizeSkip: 1
+
+# Precision (inverse of covariance) of zero velocity and no motion priors
+zero_velocity_precision: 1000
+no_motion_position_precision: 1000
+no_motion_rotation_precision: 10000
+
+# Appears to currently be unused, as addConstantVelocityFactor() is commented
+# out.
+constant_vel_precision: 100
+
+# Allows user to specify extra optimization iterations per call to optimize()
+numOptimize: 1
+
+# Number of nodes in optimization window size.
+nr_states: 25 
+
+# As far as I understand, minimizes linearization by only relinearizing subset
+# of variables. This threhold only updates linear delta when changes in variables
+# value are above the threshold.
+# See more information here: https://gtsam.org/doxygen/a04352.html
+wildfire_threshold: 0.001
+
+# Set to use Dogleg minimization instead of Gauss-Newton
+useDogLeg: 0

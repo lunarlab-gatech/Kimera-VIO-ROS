@@ -2,7 +2,7 @@
 # Type of VIO Frontend to use
 # 0: MonoImu
 # 1: StereoImu
-frontend_type: 0 # Hercules only supports single camera
+frontend_type: 0    # Hercules only supports single camera
 
 # Type of vioBackend to use:
 # 0: VioBackend

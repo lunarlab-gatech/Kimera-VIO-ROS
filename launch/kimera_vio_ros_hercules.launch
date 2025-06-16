@@ -14,7 +14,7 @@
   <!-- I think this is just for logging, but could use more investigation-->
   <!-- Is used if autoInitialize is set to 0, but I don't think we want to
        use any ground truth information in the odometry process, even for
-       initializing. -->
+       initializing, since we are applying to a multi-robot alignment case. -->
   <arg name="gt_topic" value=""/> 
 
   <!-- Path to the rosbag that we will parse when running offline -->
