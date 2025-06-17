@@ -1,7 +1,8 @@
 %YAML:1.0
 # Type of VIO Frontend to use, where:
 #   0: MonoImu, 1: StereoImu
-frontend_type: 0    # Hercules only supports single camera
+# Hercules only supports single camera
+frontend_type: 0 
 
 # Type of vioBackend to use, where:
 # 0: VioBackend, 1: RegularVioBackend

@@ -4,6 +4,8 @@ environment:
   ROS_DIR: '/opt/ros/noetic'
   DATA_DIR: '/home/dbutterfield3/data/hercules_datasets/V1.2'
   ROS_WS: '/home/dbutterfield3/kimera_vio_ws'
+  ROBOT_NAME: 'Husky1'
+  DATASET_NAME: 'HerculesHusky'
 
 options:
   default-command: /bin/bash
@@ -19,17 +21,10 @@ windows:
   - roscore
   - shell_command:
     - sleep 8
-    - roslaunch kimera_vio_ros kimera_vio_ros_hercules_Husky1.launch \
-          rosbag_path:=$DATA_DIR/ausenv_test1_checkpoints_CSLAM_2UAVUGV_pruned.bag \
-          gt_topic:=/hercules_node/Husky1/ground_truth/odom_local \
-          robot_name:=Husky1 \
-          robot_id:=0 \
+    - roslaunch kimera_vio_ros kimera_vio_ros_hercules_offline.launch rosbag_path:=$DATA_DIR/ausenv_test1_checkpoints_CSLAM_2UAVUGV_pruned.bag gt_topic:=/hercules_node/$ROBOT_NAME/ground_truth/odom_local robot_name:=$ROBOT_NAME robot_id:=0 dataset_name:=$DATASET_NAME
   - shell_command:
     - sleep 10
-    - rviz -d $(rospack find kimera_vio_ros)/rviz/kimera_vio_euroc.rviz
-  #- shell_command:
-    #- sleep 12
-    #- rosbag play --clock $DATA_DIR/V1_01_easy.bag
+    - rviz -d $(rospack find kimera_vio_ros)/rviz/kimera_vio_hercules_online.rviz
 
 - window_name: kill
   layout: tiled

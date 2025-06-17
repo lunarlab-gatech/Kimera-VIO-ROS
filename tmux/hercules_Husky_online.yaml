@@ -1,0 +1,35 @@
+session_name: kimera_vio
+
+environment:
+  ROS_DIR: '/opt/ros/noetic'
+  DATA_DIR: '/home/dbutterfield3/data/hercules_datasets/V1.2'
+  ROS_WS: '/home/dbutterfield3/kimera_vio_ws'
+  ROBOT_NAME: 'Husky1'
+  DATASET_NAME: 'HerculesHusky'
+
+options:
+  default-command: /bin/bash
+
+windows:
+- window_name: main
+  layout: tiled
+  focus: true
+  shell_command_before:
+  - source $ROS_DIR/setup.bash
+  - source $ROS_WS/devel/setup.bash
+  panes:
+  - roscore
+  - shell_command:
+    - sleep 8
+    - roslaunch kimera_vio_ros kimera_vio_ros_hercules_online.launch rosbag_path:=$DATA_DIR/ausenv_test1_checkpoints_CSLAM_2UAVUGV_pruned.bag gt_topic:=/hercules_node/$ROBOT_NAME/ground_truth/odom_local robot_name:=$ROBOT_NAME robot_id:=0 dataset_name:=$DATASET_NAME
+  - shell_command:
+    - sleep 10
+    - rviz -d $(rospack find kimera_vio_ros)/rviz/kimera_vio_hercules_online.rviz
+  - shell_command:
+    - sleep 12
+    - rosbag play --clock $DATA_DIR/ausenv_test1_checkpoints_CSLAM_2UAVUGV_pruned.bag --topics /hercules_node/$ROBOT_NAME/imu/imu /hercules_node/$ROBOT_NAME/front_center_Scene/image /hercules_node/$ROBOT_NAME/ground_truth/odom_local  /tf /tf_static
+
+- window_name: kill
+  layout: tiled
+  panes:
+  - echo "tmux kill-session -t kimera_vio"

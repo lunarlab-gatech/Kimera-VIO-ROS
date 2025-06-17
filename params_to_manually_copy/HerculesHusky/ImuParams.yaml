@@ -29,8 +29,13 @@ accelerometer_noise_density:  2.353596e-03    # [ m / s^2 / sqrt(Hz) ]   ( accel
 accelerometer_random_walk: 1.248182769e-05    # [ m / s^3 / sqrt(Hz) ]   ( accel bias diffusion )
 
 # ================== Extra Parameters ================== 
-# Estimate fine alignment at IMU rate instead of image rate
-do_imu_rate_time_alignment: 1
+# Estimate fine alignment at IMU rate instead of image rate. This would be preferred, however
+# the code is written such that there needs to be an equal number of camera frames to match 
+# 'time_alignment_window_size_s' of imu frames before alignment is complete. Since IMU runs
+# at 2000 hz but camera at only 40, thus 10 seconds of IMU data requires 500 seconds of camera
+# data to do alignment, which is longer than our sequence. Thus, we need to do it at camera
+# rate. 
+do_imu_rate_time_alignment: 0 # Changed from 1
 
 # Window size in seconds of data to do time alignment for Camera to IMU
 time_alignment_window_size_s: 10.0

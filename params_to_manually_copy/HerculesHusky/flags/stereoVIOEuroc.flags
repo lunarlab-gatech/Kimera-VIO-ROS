@@ -11,7 +11,11 @@
 # 3D Visualization
 --visualize=true
 --visualize_lmk_type=false
---visualize_mesh=true
+
+# Disable this, as Mono pipeline doesn't have a mesher running anyway
+--visualize_mesh=false
+
+
 --visualize_mesh_2d=false
 --visualize_mesh_with_colored_polygon_clusters=false
 --visualize_point_cloud=true
@@ -22,11 +26,13 @@
 --visualize_semantic_mesh=false
 --visualize_mesh_in_frustum=false
 #--visualize_load_mesh_filename=/home/tonirv/datasets/euroc/V1_01_easy/mav0/pointcloud0/data.ply
-# Type of 3D Visualization:
-# 0: mesh 3d
-# 1: pointcloud
-# 2: none
---viz_type=0
+
+# Type of 3D Visualization, where:
+#   0: mesh 3d, 1: pointcloud, 2: none
+# The mesher is not currently enabled for Mono, so 0 doesn't currently work
+--viz_type=1
+
+
 --min_num_obs_for_mesher_points=3
 --extract_planes_from_the_scene=false
 

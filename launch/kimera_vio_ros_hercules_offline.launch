@@ -15,28 +15,28 @@
   <!-- Is used if autoInitialize is set to 0, but I don't think we want to
        use any ground truth information in the odometry process, even for
        initializing, since we are applying to a multi-robot alignment case. -->
-  <arg name="gt_topic" value=""/> 
+  <arg name="gt_topic" default=""/> 
 
   <!-- Path to the rosbag that we will parse when running offline -->
-  <arg name="rosbag_path" value="" unless="$(arg online)"/>
+  <arg name="rosbag_path" default="" unless="$(arg online)"/>
 
   <!-- Robot name (just used for making output log directory) -->
-  <arg name="robot_name" value="">
+  <arg name="robot_name" default=""/>
 
   <!-- Unique integer id of this robot. Might effect Loop closures, so will set properly just in case -->
-  <arg name="robot_id" value=""/>
+  <arg name="robot_id" default=""/>
+
+  <!-- Used for:
+     1. Determing output log directory (in Kimera-VIO-ROS/output_logs/<dataset_name>/)
+     2. Loading parameters (from Kimera-VIO/params/<dataset_name>/)-->
+  <arg name="dataset_name" default=""/>
 
   <!-- =============================================================================== -->
   <!-- ============= Set Arguments to pass to lower-level launch file ================ -->
   <!-- =============================================================================== -->
 
-  <!-- Used for:
-        1. Determing output log directory (in Kimera-VIO-ROS/output_logs/<dataset_name>/)
-        2. Loading parameters (from Kimera-VIO/params/<dataset_name>/)-->
-  <arg name="dataset_name" value="Hercules"/>
-
   <!-- Verbosity level for Google Logging -->
-  <arg name="verbosity"    value="1" />
+  <arg name="verbosity"    value="0" />
 
   <!-- See Kimera-VIO/src/pipeline/Pipeline.cpp for meaning -->
   <arg name="do_coarse_temporal_sync" value="false"/>
@@ -45,7 +45,7 @@
   <!-- Set should_use_sim_time to true if you use rosbag with clock argument -->
   <arg name="should_use_sim_time" value="false"/>  <!-- I believe this value should likely not matter, as 
                                                         running offline means we parse the rosbag values
-                                                        directly. Could potentizlly affect vluaes in published
+                                                        directly. Could potentially affect values in published
                                                         static transforms, but I don't think we're going to
                                                         be saving those. -->
 
@@ -69,16 +69,14 @@
   <arg name="visualize" value="true"/>
   <arg name="use_rviz"  value="false"/> <!-- Attempt to use RViz -->
 
-  <!-- Hercules has no second camera, so it has no frame id or topic on the right-->
-  <arg name="right_cam_frame_id" value=""/>
+  <!-- Hercules has no second camera, so it has no topic on the right-->
   <arg name="right_cam_topic"    value=""/>
 
   <!-- Necessary topics -->
   <arg name="left_cam_topic"      value="/hercules_node/$(arg robot_name)/front_center_Scene/image"/>
   <arg name="imu_topic"           value="/hercules_node/$(arg robot_name)/imu/imu"/>
 
-  <!-- No values for these since we're using MonoIMU -->
-  <arg name="right_cam_topic"     value=""/>
+  <!-- No values for this since we're using MonoIMU -->
   <arg name="depth_cam_topic"     value=""/>
 
   <!-- Define frame values -->
