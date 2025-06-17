@@ -1,20 +1,18 @@
 %YAML:1.0
-# Type of VIO Frontend to use
-# 0: MonoImu
-# 1: StereoImu
+# Type of VIO Frontend to use, where:
+#   0: MonoImu, 1: StereoImu
 frontend_type: 0    # Hercules only supports single camera
 
-# Type of vioBackend to use:
-# 0: VioBackend
-# 1: RegularVioBackend
+# Type of vioBackend to use, where:
+# 0: VioBackend, 1: RegularVioBackend
+# More informations on these backends and associated papers
+# can be found here: https://github.com/MIT-SPARK/Kimera-VIO
 backend_type: 1
 
-# Type of Displayer to use:
-# 0: OpenCV
-# 1: Pangolin
+# Type of Displayer to use, where:
+#   0: OpenCV, 1: Pangolin
 display_type: 0
 
 # Run VIO parallel or sequential
-# 0: Sequential
-# 1: Parallel
+#   0: Sequential, 1: Parallel
 parallel_run: 1

@@ -32,9 +32,22 @@ accelerometer_random_walk: 1.248182769e-05    # [ m / s^3 / sqrt(Hz) ]   ( accel
 # Estimate fine alignment at IMU rate instead of image rate
 do_imu_rate_time_alignment: 1
 
-
+# Window size in seconds of data to do time alignment for Camera to IMU
 time_alignment_window_size_s: 10.0
+
+# Additional scaling to apply to nominal threshold of "gyroscope_noise_density ^2".
+# If variance of IMU buffer is less than gyroscope_noise_density^2 * 
+# time_alignment_variance_threshold_scaling, then its considered to contain mostly
+# noise and the alignment is delayed.
 time_alignment_variance_threshold_scaling: 30.0
+
+# Represents the standard devitation of the noise introduced 
+# via discrete-time integration during IMU Preintegration.
 imu_integration_sigma: 1.0e-8
+
+# A way to set the imu_time_shift manually. Since we enabled "do_fine_temporal_sync"
+# in ROS launch file, this should be unused.
 imu_time_shift: 0.0
+
+# Gravity vectory expressed in the navigation (world) frame
 n_gravity: [0.0, 0.0, -9.81]
