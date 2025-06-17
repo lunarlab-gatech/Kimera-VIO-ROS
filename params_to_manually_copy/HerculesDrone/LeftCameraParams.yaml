@@ -1,0 +1,21 @@
+%YAML:1.0
+# General sensor definitions.
+camera_id: left_cam
+
+# Sensor extrinsics wrt. the body-frame.
+T_BS:
+  cols: 4
+  rows: 4
+  data: [ 0,  0.17364818,  0.98480775,  0.35,      
+         -1,           0,           0,     0,       
+          0, -0.98480775,  0.17364818,  -0.1,    
+          0,           0,           0,     1]
+
+# ============== Camera specific definitions ==============
+rate_hz: 40 # Our frame rate fluctates between 37 and 44, which might cause issues
+resolution: [1280, 720]
+camera_model: pinhole
+intrinsics: [640, 640, 640, 360] #fu, fv, cu, cv
+distortion_model: none # No distortion is simulated
+distortion_coefficients: [0, 0, 0, 0, 0]
+
