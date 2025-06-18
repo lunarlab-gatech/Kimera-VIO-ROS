@@ -43,3 +43,6 @@ RUN sudo echo ""
 RUN sudo apt install tmux tmuxp -y
 RUN touch ~/.tmux.conf && \
     echo "set -g mouse on" >> ~/.tmux.conf
+
+# Install additional ROS utilities
+RUN sudo apt install ros-noetic-rqt-graph -y

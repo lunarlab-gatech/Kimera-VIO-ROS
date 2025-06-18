@@ -1,17 +1,31 @@
 %YAML:1.0
-#TRACKER PARAMETERS
+
+# ================== TRACKER PARAMETERS ================== 
+# Window size used in the cv::calcOpticalFlowPyrLK function 
+# to calculate optical flow using the Lucas-Kanade method
 klt_win_size: 24
+
+# The maximum number of iterations before termination cv::calcOpticalFlowPyrLK
 klt_max_iter: 30
+
+# The maximum number of "pyramid" levels to use
 klt_max_level: 4
+
+# Desired accuracy (which will cause termination when serach window moves
+# by less than eps)
 klt_eps: 0.1
+
+# Maximum number of frames that a feature will be seen...
+# Maybe we want to increase this, since our camera hz is higher?
 maxFeatureAge: 25
 
-# Detector Params
-# 0: FAST
-# 1: ORB
-# 2: AGAST
-# 3: GFTT, aka Good Features To Track
+# ================== Detector Parameters ================== 
+# Feature to use, where:
+#   0: FAST, 1: ORB, 2: AGAST, 3: GFTT, aka Good Features To Track
 feature_detector_type: 3
+
+
+
 maxFeaturesPerFrame: 300
 
 # Good Features To Track specific parameters
@@ -34,7 +48,7 @@ minPointDist: 0.5
 maxPointDist: 10
 bidirectionalMatching: 0
 
-# Non-maximum suppression params
+# ================== Non-maximum suppression params ================== 
 max_nr_keypoints_before_anms: 2000
 enable_non_max_suppression: 1
 non_max_suppression_type: 6

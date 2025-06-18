@@ -7,8 +7,10 @@ backend_modality: 0
 
 # ============== INITIALIZATION PARAMETERS ============== 
 # 0 uses GT information to initialize, but we don't want this
-# since downsteam we will run a multi-robot alignment task
-autoInitialize: 1
+# since downsteam we will run a multi-robot alignment task.
+# However, since we are currently violating assumptions for
+# IMU initialization via autoInitialize, set it zero for now
+autoInitialize: 0
 
 # Appears to round local & global gravity vectors while calculating
 # the initial rotation between them.

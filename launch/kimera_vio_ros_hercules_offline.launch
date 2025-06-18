@@ -67,7 +67,7 @@
   <!-- Appear to be enable visualization, though what kind I'm not sure exactly -->
   <!-- kimera_vio_ros.launch implies its a ROS visualization, but code seems to indicate otherwise -->
   <arg name="visualize" value="true"/>
-  <arg name="use_rviz"  value="false"/> <!-- Attempt to use RViz -->
+  <arg name="use_rviz"  value="true"/> <!-- Attempt to use RViz -->
 
   <!-- Hercules has no second camera, so it has no topic on the right-->
   <arg name="right_cam_topic"    value=""/>
