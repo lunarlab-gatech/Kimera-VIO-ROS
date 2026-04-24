@@ -58,6 +58,12 @@ catkin_add_gtest(testKimeraVioRos
 )
 target_link_libraries(testKimeraVioRos ${PROJECT_NAME})
 
+catkin_install_python(PROGRAMS
+  scripts/imu_frame_fixer.py
+  DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
+)
+
+
 cs_install()
 
 cs_export()

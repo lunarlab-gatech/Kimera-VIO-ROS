@@ -45,4 +45,4 @@ RUN touch ~/.tmux.conf && \
     echo "set -g mouse on" >> ~/.tmux.conf
 
 # Install additional ROS utilities
-RUN sudo apt install ros-noetic-rqt-graph -y
+RUN sudo apt install ros-noetic-rqt-graph ros-noetic-rviz-imu-plugin -y 

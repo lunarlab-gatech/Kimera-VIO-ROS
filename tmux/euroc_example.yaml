@@ -19,13 +19,13 @@ windows:
   - roscore
   - shell_command:
     - sleep 8
-    - roslaunch kimera_vio_ros kimera_vio_ros_euroc.launch online:=false rosbag_path:=$DATA_DIR/V1_01_easy.bag log_output:=true
+    - roslaunch kimera_vio_ros kimera_vio_ros_euroc.launch online:=true rosbag_path:=$DATA_DIR/V1_01_easy.bag log_output:=true
   - shell_command:
     - sleep 10
     - rviz -d $(rospack find kimera_vio_ros)/rviz/kimera_vio_euroc.rviz
-  #- shell_command:
-    #- sleep 12
-    #- rosbag play --clock $DATA_DIR/V1_01_easy.bag
+  - shell_command:
+    - sleep 12
+    - rosbag play --clock $DATA_DIR/V1_01_easy.bag
 
 - window_name: kill
   layout: tiled

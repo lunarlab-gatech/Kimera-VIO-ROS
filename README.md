@@ -33,7 +33,7 @@ The rest of this README **assumes that you are inside the Docker container**. Fo
 Next navigate to the root of your ROS workspace, and run the following commands:
 ```bash
 source /opt/ros/noetic/setup.bash
-caktin init
+catkin init
 catkin config --cmake-args -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_FLAGS="-Wall -Wno-error" -DGTSAM_TANGENT_PREINTEGRATION=OFF
 catkin config --merge-devel
 echo 'source ~/<name_of_ros_ws>/devel/setup.bash' >> ~/.bashrc
@@ -43,7 +43,7 @@ Now, navigate into the `src` folder and then run this command:
 wstool init
 ```
 
-Depending on if you want to downlaod other dependencies via ssh or https, run one of the following commands:
+Depending on if you want to download other dependencies via ssh or https, run one of the following commands:
 ```bash
 wstool merge Kimera-VIO-ROS/install/kimera_vio_ros_ssh.rosinstall # ssh
 ```

@@ -1,0 +1,11 @@
+<launch>
+  <arg name="input_topic" default="/imu/data"/>
+  <arg name="output_topic" default="/imu/data_fixed"/>
+  <arg name="new_frame_id" default="imu_link"/>
+
+  <node pkg="kimera_vio_ros" type="imu_frame_fixer.py" name="imu_frame_fixer" output="screen">
+    <param name="input_topic" value="$(arg input_topic)"/>
+    <param name="output_topic" value="$(arg output_topic)"/>
+    <param name="new_frame_id" value="$(arg new_frame_id)"/>
+  </node>
+</launch>

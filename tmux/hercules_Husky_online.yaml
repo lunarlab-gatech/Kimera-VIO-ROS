@@ -20,11 +20,18 @@ windows:
   panes:
   - roscore
   - shell_command:
-    - sleep 5
+    - sleep 2
+    - rosparam set use_sim_time true
+    - sleep 3
+    - export DISABLE_ROS1_EOL_WARNINGS=1
     - rviz -d $(rospack find kimera_vio_ros)/rviz/kimera_vio_hercules_online.rviz
   - shell_command:
     - sleep 12
-    - rosbag play $DATA_DIR/ausenv_test1_checkpoints_CSLAM_2UAVUGV_pruned.bag -r 5.0 --topics /hercules_node/$ROBOT_NAME/imu/imu /hercules_node/$ROBOT_NAME/front_center_Scene/image /hercules_node/$ROBOT_NAME/ground_truth/odom_local  /tf /tf_static /clock
+    - rosbag play $DATA_DIR/ausenv_test1_checkpoints_CSLAM_2UAVUGV_pruned.bag -r 5.0 /hercules_node/$ROBOT_NAME/imu/imu:=/hercules_node/Husky1/imu/imu_missing_frame --topics /hercules_node/$ROBOT_NAME/imu/imu /hercules_node/$ROBOT_NAME/front_center_Scene/image /hercules_node/$ROBOT_NAME/ground_truth/odom_local  /tf /tf_static /clock
+  - shell_command:
+    - sleep 10
+    - roslaunch kimera_vio_ros imu_frame_fixer.launch input_topic:=/hercules_node/Husky1/imu/imu_missing_frame output_topic:=/hercules_node/Husky1/imu/imu new_frame_id:=Husky1/ground_truth/odom_local
+
 
 - window_name: kimera-vio
   layout: tiled
@@ -35,8 +42,8 @@ windows:
   panes:
   - shell_command:
     - sleep 10
-    - roslaunch kimera_vio_ros kimera_vio_ros_hercules_online.launch rosbag_path:=$DATA_DIR/ausenv_test1_checkpoints_CSLAM_2UAVUGV_pruned.bag gt_topic:=/hercules_node/$ROBOT_NAME/ground_truth/odom_local robot_name:=$ROBOT_NAME robot_id:=0 dataset_name:=$DATASET_NAME
-  -
+    - roslaunch kimera_vio_ros kimera_vio_ros_hercules_online.launch rosbag_path:=$DATA_DIR/ausenv_test1_checkpoints_CSLAM_2UAVUGV_pruned.bag gt_topic:=/hercules_node/$ROBOT_NAME/ground_truth/odom_local robot_name:=$ROBOT_NAME robot_id:=0 dataset_name:=$DATASET_NAME &> temp.txt
+  - 
 
 - window_name: kill
   layout: tiled

@@ -1,4 +1,4 @@
-DATA_DIR='/media/dbutterfield3/T73'
+DATA_DIR='/media/dbutterfield3/T71'
 ROS_WS_DIR='/home/dbutterfield3/Research/ros_workspaces/kimera_vio_ws'
 
 docker run -it \
