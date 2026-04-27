@@ -2,7 +2,7 @@ session_name: kimera_vio
 
 environment:
   ROS_DIR: '/opt/ros/noetic'
-  DATA_DIR: '/home/dbutterfield3/data/EuRoC_datasets'
+  DATA_DIR: '/home/dbutterfield3/data/EuRoC_Dataset/vicon_room1/V1_01_easy'
   ROS_WS: '/home/dbutterfield3/kimera_vio_ws'
 
 options:

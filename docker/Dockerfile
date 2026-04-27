@@ -43,3 +43,6 @@ RUN sudo echo ""
 RUN sudo apt install tmux tmuxp -y
 RUN touch ~/.tmux.conf && \
     echo "set -g mouse on" >> ~/.tmux.conf
+
+# Install missing dependencies
+RUN sudo apt-get install libgoogle-glog-dev -y
