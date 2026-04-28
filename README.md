@@ -103,6 +103,25 @@ Download a [Euroc](https://projects.asl.ethz.ch/datasets/doku.php?id=kmavvisuali
   tmuxp load tmux/euroc_example.yaml
   ```
 
+## Running Tests
+
+Build and run all tests for this package:
+```bash
+catkin build kimera_vio_ros --no-deps --make-args testKimeraVioRos
+source ~/kimera_vio_ws/devel/setup.bash
+~/kimera_vio_ws/devel/lib/kimera_vio_ros/testKimeraVioRos
+```
+
+To filter to a specific test or suite by name:
+```bash
+~/kimera_vio_ws/devel/lib/kimera_vio_ros/testKimeraVioRos --gtest_filter=DecompressImage.*
+```
+
+To list all available test cases without running them:
+```bash
+~/kimera_vio_ws/devel/lib/kimera_vio_ros/testKimeraVioRos --gtest_list_tests
+```
+
 ## Other functionalities
 
 ### Using camera_info topics instead of Yaml parameters

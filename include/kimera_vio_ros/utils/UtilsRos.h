@@ -14,6 +14,8 @@
 #include <nav_msgs/Odometry.h>
 #include <ros/ros.h>
 #include <sensor_msgs/CameraInfo.h>
+#include <sensor_msgs/CompressedImage.h>
+#include <sensor_msgs/Image.h>
 #include <tf2_ros/static_transform_broadcaster.h>
 #include <tf2_ros/transform_listener.h>
 
@@ -40,6 +42,11 @@ void msgCamInfoToCameraParams(const sensor_msgs::CameraInfoConstPtr& cam_info,
 void rosOdometryToVioNavState(const nav_msgs::Odometry& gt_odom,
                               const ros::NodeHandle& node_handle,
                               VioNavState* vio_navstate);
+
+// Decompress a sensor_msgs::CompressedImage (JPEG/PNG) into a
+// sensor_msgs::Image with MONO8 encoding. Returns nullptr on failure.
+sensor_msgs::ImagePtr decompressImage(
+    const sensor_msgs::CompressedImageConstPtr& compressed_msg);
 
 }  // namespace utils
 

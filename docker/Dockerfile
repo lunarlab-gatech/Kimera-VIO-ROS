@@ -45,4 +45,4 @@ RUN touch ~/.tmux.conf && \
     echo "set -g mouse on" >> ~/.tmux.conf
 
 # Install missing dependencies
-RUN sudo apt-get install libgoogle-glog-dev -y
+RUN sudo apt-get install libgoogle-glog-dev ros-noetic-image-transport-plugins -y

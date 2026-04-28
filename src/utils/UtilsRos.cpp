@@ -12,7 +12,9 @@
 
 #include <geometry_msgs/Transform.h>
 #include <nav_msgs/Odometry.h>
+#include <opencv2/opencv.hpp>
 #include <ros/ros.h>
+#include <sensor_msgs/image_encodings.h>
 #include <tf2_ros/static_transform_broadcaster.h>
 #include <tf2_ros/transform_listener.h>
 
@@ -143,6 +145,40 @@ void rosOdometryToVioNavState(const nav_msgs::Odometry& odom,
       parsed_gyr_bias[0], parsed_gyr_bias[1], parsed_gyr_bias[2]);
 
   vio_navstate->imu_bias_ = gtsam::imuBias::ConstantBias(acc_bias, gyr_bias);
+}
+
+sensor_msgs::ImagePtr decompressImage(
+    const sensor_msgs::CompressedImageConstPtr& compressed_msg) {
+  CHECK(compressed_msg);
+  const std::vector<uint8_t>& buf = compressed_msg->data;
+  if (buf.empty()) {
+    LOG(ERROR) << "Compressed image data is empty at t="
+               << compressed_msg->header.stamp.toNSec();
+    return nullptr;
+  }
+  const cv::Mat decoded = cv::imdecode(buf, cv::IMREAD_GRAYSCALE);
+  if (decoded.empty()) {
+    LOG(ERROR) << "Failed to decompress image on topic: "
+               << compressed_msg->header.frame_id
+               << " at t=" << compressed_msg->header.stamp.toNSec();
+    return nullptr;
+  }
+  // sensor_msgs::CompressedImage carries no is_bigendian field, so we detect
+  // host byte order: the pixel buffer we fill below comes from cv::imdecode
+  // running on this host, so it is in the host's native byte order.
+  const uint16_t endian_probe = 0x0001u;
+  const bool host_is_big_endian =
+      (*reinterpret_cast<const uint8_t*>(&endian_probe) == 0x00u);
+
+  sensor_msgs::ImagePtr img = boost::make_shared<sensor_msgs::Image>();
+  img->header = compressed_msg->header;
+  img->height = decoded.rows;
+  img->width = decoded.cols;
+  img->encoding = sensor_msgs::image_encodings::MONO8;
+  img->is_bigendian = host_is_big_endian;
+  img->step = decoded.cols;
+  img->data.assign(decoded.data, decoded.data + decoded.rows * decoded.cols);
+  return img;
 }
 
 }  // namespace utils

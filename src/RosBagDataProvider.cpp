@@ -13,6 +13,8 @@
 
 #include <kimera-vio/pipeline/Pipeline-definitions.h>
 
+#include <sensor_msgs/CompressedImage.h>
+
 #include "kimera_vio_ros/utils/UtilsRos.h"
 
 namespace VIO {
@@ -372,6 +374,37 @@ bool RosbagDataProvider::parseRosbag(const std::string& bag_path,
           rosbag_data->depth_imgs_.push_back(img_msg);
         } else {
           LOG(WARNING) << "Img with unexpected topic: " << msg_topic;
+        }
+      } else {
+        LOG(WARNING) << "Skipping first frame in rosbag, since IMU data not "
+                        "yet available.";
+      }
+      continue;
+    }
+
+    // Check if msg is a compressed image.
+    sensor_msgs::CompressedImageConstPtr compressed_img =
+        msg.instantiate<sensor_msgs::CompressedImage>();
+    if (compressed_img != nullptr) {
+      if (start_parsing_stereo) {
+        sensor_msgs::ImageConstPtr img_msg =
+            utils::decompressImage(compressed_img);
+        if (img_msg == nullptr) {
+          LOG(ERROR) << "Skipping undecodable compressed image on topic: "
+                     << msg_topic;
+          continue;
+        }
+        if (msg_topic == left_imgs_topic_) {
+          rosbag_data->timestamps_.push_back(img_msg->header.stamp.toNSec());
+          rosbag_data->left_imgs_.push_back(img_msg);
+        } else if (vio_params_.frontend_type_ == FrontendType::kStereoImu &&
+                   msg_topic == right_imgs_topic_) {
+          rosbag_data->right_imgs_.push_back(img_msg);
+        } else if (vio_params_.frontend_type_ == FrontendType::kRgbdImu &&
+                   msg_topic == depth_imgs_topic_) {
+          rosbag_data->depth_imgs_.push_back(img_msg);
+        } else {
+          LOG(WARNING) << "Compressed img with unexpected topic: " << msg_topic;
         }
       } else {
         LOG(WARNING) << "Skipping first frame in rosbag, since IMU data not "
